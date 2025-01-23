@@ -1,0 +1,2 @@
+# Movie-Dux
+**Built a React-based movie watchlist app** allowing users to browse, search, filter movies, and add them to a personalized watchlist. Focused on creating a responsive UI and efficient state management for seamless user experience.
