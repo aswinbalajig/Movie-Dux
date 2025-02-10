@@ -1,11 +1,13 @@
-import {React,useState} from "react";
+import {React,useEffect,useState} from "react";
 import MovieCard from "./MovieCard";
-export default function MovieGrid({movies , watchlist,toggleWatchlist})
+import Login from "./auth/Login";
+import { useNavigate } from 'react-router-dom';
+export default function MovieGrid({movies , watchlist,toggleWatchlist,isloggedin,setCurrentUser,setLoggedIn})
 {       const [searchInput,setSearchInput]=useState("");
         const [genre,setGenre]=useState("All Genre");
         const [rating,setRating]=useState("All");
-        
-        
+        const navigate=useNavigate();
+        console.log(`isloggedin when entering movie grid : ${isloggedin}`)
         
         const filterGenre=movie=>genre==="All Genre"|| genre===movie.genre;
 
@@ -78,44 +80,77 @@ step 3 filter with rating:
 the code which is actually used uses only the filter function to filter the movies which takes the truth values of specfic filter functions like for genre,rating and searchterm
 */
 
-
+useEffect(
+  ()=>{
+    if(!isloggedin)
+      { console.log(`not loggedin in moveigrid isloggin=${isloggedin}`)
+        navigate('/login')
+      }
+  }
+  ,[]);
 
 
         return (
           <div>
-            <input
-              type="text"
-              className="search-input"
-              onChange={(e) => setSearchInput(e.target.value)}      
-              placeholder="search movies"
-              value={searchInput}
-            />
-            <div className="filter-bar">
-              <div className="filter-slot">
-                <label><span className="filter-lable">Genre</span></label>
-                <select className="filter-dropdown" value={genre} onChange={(e)=>{setGenre(e.target.value)}}>
-                  <option>All Genre</option>
-                  <option>action</option>
-                  <option>drama</option>
-                  <option>fantasy</option>
-                  <option>horror</option>
-                </select>
+            {(
+              <div>
+                {console.log('logged in')}
+                <input
+                  type="text"
+                  className="search-input"
+                  onChange={(e) => setSearchInput(e.target.value)}
+                  placeholder="search movies"
+                  value={searchInput}
+                />
+                <div className="filter-bar">
+                  <div className="filter-slot">
+                    <label>
+                      <span className="filter-lable">Genre</span>
+                    </label>
+                    <select
+                      className="filter-dropdown"
+                      value={genre}
+                      onChange={(e) => {
+                        setGenre(e.target.value);
+                      }}
+                    >
+                      <option>All Genre</option>
+                      <option>action</option>
+                      <option>drama</option>
+                      <option>fantasy</option>
+                      <option>horror</option>
+                    </select>
+                  </div>
+                  <div className="filter-slot">
+                    <label>
+                      <span className="filter-lable">Rating</span>
+                    </label>
+                    <select
+                      className="filter-dropdown"
+                      value={rating}
+                      onChange={(e) => {
+                        setRating(e.target.value);
+                      }}
+                    >
+                      <option>All</option>
+                      <option>Good</option>
+                      <option>Ok</option>
+                      <option>Bad</option>
+                    </select>
+                  </div>
+                </div>
+                <div className="movies-grid">
+                  {filteredMovies.map((movie) => (
+                    <MovieCard
+                      key={movie.id}
+                      movie={movie}
+                      toggleWatchlist={toggleWatchlist}
+                      isWatchlisted={watchlist.includes(movie.id)}
+                    ></MovieCard>
+                  ))}
+                </div>
               </div>
-              <div className="filter-slot">
-              <label><span className="filter-lable">Rating</span></label>
-                <select className="filter-dropdown" value={rating} onChange={(e)=>{setRating(e.target.value)}}>
-                  <option>All</option>
-                  <option>Good</option>
-                  <option>Ok</option>
-                  <option>Bad</option>
-                </select>
-              </div>
-            </div>
-            <div className="movies-grid">
-              {filteredMovies.map((movie) => (
-                <MovieCard key={movie.id} movie={movie} toggleWatchlist={toggleWatchlist} isWatchlisted={watchlist.includes(movie.id)}></MovieCard>
-              ))}
-            </div>
+            )}
           </div>
         );
         

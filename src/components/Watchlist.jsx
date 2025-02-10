@@ -1,8 +1,18 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import '../styles.css';
 import MovieCard from './MovieCard';
+import { useNavigate } from 'react-router-dom';
 
-export default function Watchlist({ movies, watchlist, toggleWatchlist }) {
+export default function Watchlist({ movies, watchlist, toggleWatchlist,isloggedin}) {
+    const navigate=useNavigate();
+    useEffect(()=>{
+          if(!isloggedin)
+          {console.log('not logged in when in watchlist.jsx')
+            navigate('/login');
+          }
+    },[]);
+
+
     return (
         <div className='watchlist'>
             {watchlist.map((movieid) => {
